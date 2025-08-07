@@ -16,6 +16,7 @@ Built with Laravel 12, using Eloquent ORM and API resources for structured respo
 - Composer
 - Laravel 12
 - Laravel Passport
+- L5-Swagger
 - MySQL database
 - Postman or cURL for testing API endpoints
 
@@ -27,11 +28,6 @@ Built with Laravel 12, using Eloquent ORM and API resources for structured respo
 3. composer install
 4. php artisan migrate
 5. php artisan db:seed
-6. php artisan serve
+6. php artisan passport:install
+7. php artisan serve
 
-
-## Query Parameters for GET /api/translations
-
-1. tag: Filter by tag name (e.g., mobile).
-2. key: Filter by translation key.
-3. content: Filter by translation value (partial match).

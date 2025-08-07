@@ -8,11 +8,41 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Traits\RespondsWithHttpStatus;
+use OpenApi\Attributes as OA;
 
+#[OA\Info(version: "1.0.0", title: "Laravel Translation Service API")]
 class AuthController extends Controller
 {
     use RespondsWithHttpStatus;
 
+    #[OA\Post(
+        path: "/api/login",
+        summary: "Login a user and return an access token",
+        tags: ["Authentication"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["email", "password"],
+                properties: [
+                    new OA\Property(property: "email", type: "string", format: "email", example: "test@example.com"),
+                    new OA\Property(property: "password", type: "string", example: "password")
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Successful login",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "token", type: "string", example: "your-access-token")
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: "Invalid credentials"),
+            new OA\Response(response: 422, description: "Validation error")
+        ]
+    )]
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -35,6 +65,34 @@ class AuthController extends Controller
         return $this->success('Token', $token, 200);
     }
 
+    #[OA\Post(
+        path: "/api/register",
+        summary: "Register a new user and return an access token",
+        tags: ["Authentication"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["name", "email", "password"],
+                properties: [
+                    new OA\Property(property: "name", type: "string", example: "John Doe"),
+                    new OA\Property(property: "email", type: "string", format: "email", example: "john@example.com"),
+                    new OA\Property(property: "password", type: "string", example: "password123")
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "User registered successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "token", type: "string", example: "your-access-token")
+                    ]
+                )
+            ),
+            new OA\Response(response: 422, description: "Validation error")
+        ]
+    )]
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
